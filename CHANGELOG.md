@@ -6,6 +6,19 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-04-08
+
+### Changed
+
+- Refreshed the locked Hono runtime dependencies to patched releases that resolve the current GitHub Dependabot moderate advisories
+- Updated the ESLint 9 toolchain to a patched release line that clears the current `@eslint/plugin-kit` advisory
+
+### Security
+
+- Resolved the `hono` cookie, IP restriction, path traversal, and `serveStatic` advisory set by moving to patched transitive versions
+- Resolved the `@hono/node-server` `serveStatic` middleware bypass advisory
+- Resolved the `@eslint/plugin-kit` ReDoS advisory through the patched ESLint 9 line
+
 ## [1.0.1] - 2026-04-08
 
 ### Added

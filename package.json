@@ -1,6 +1,6 @@
 {
   "name": "mcp-health-monitor",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "MCP server for monitoring other MCP servers — track health, uptime, tool errors, response times, and Azure DevOps pipeline status",
   "type": "module",
   "main": "./dist/mcp.js",
@@ -92,13 +92,13 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
-    "@eslint/js": "9.25.0",
+    "@eslint/js": "9.39.4",
     "@types/better-sqlite3": "7.6.13",
     "@types/jest": "29.5.14",
     "@types/node": "20.19.0",
     "@typescript-eslint/eslint-plugin": "8.30.0",
     "@typescript-eslint/parser": "8.30.0",
-    "eslint": "9.25.0",
+    "eslint": "9.39.4",
     "globals": "17.4.0",
     "jest": "29.7.0",
     "prettier": "3.5.3",

@@ -47,7 +47,7 @@ Newer registry releases exist, but v1.0 compatibility for this repo intentionall
 | `typescript` | `5.8.3` | Modern strict TypeScript without adopting the v6 toolchain yet. |
 | `jest` | `29.7.0` | Stay on the established Jest major used by the repo. |
 | `ts-jest` | `29.3.2` | Compatible with Jest 29 and ESM TypeScript tests. |
-| `eslint` | `9.25.0` | Move to flat config on a stable ESLint 9 release. |
+| `eslint` | `9.39.4` | Patched ESLint 9 line that resolves the current plugin-kit advisory without changing majors. |
 | `@typescript-eslint/parser` | `8.30.0` | Compatible with ESLint 9 and current TS 5.x usage. |
 | `@typescript-eslint/eslint-plugin` | `8.30.0` | Match the parser and flat config transition. |
 | `@types/node` | `20.19.0` | Keep typings aligned with the supported Node 20 runtime line. |
@@ -55,7 +55,7 @@ Newer registry releases exist, but v1.0 compatibility for this repo intentionall
 | `@types/better-sqlite3` | `7.6.13` | Latest compatible typings for the pinned runtime dependency. |
 | `prettier` | `3.5.3` | Stable formatter version for v1.0. |
 | `ts-node` | `10.9.2` | Stable ESM-compatible TypeScript runner for local development. |
-| `@eslint/js` | `9.25.0` | Match the pinned ESLint 9 flat-config baseline. |
+| `@eslint/js` | `9.39.4` | Match the patched ESLint 9 flat-config baseline. |
 | `globals` | `17.4.0` | Shared runtime globals for flat ESLint configuration. |
 
 - Use these versions unless the user explicitly requests a dependency strategy change.

@@ -28,7 +28,7 @@ Example Claude Desktop or VS Code MCP entry:
 ```json
 {
   "name": "mcp-health-monitor",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "mcpName": "io.github.oaslananka/mcp-health-monitor",
   "description": "Monitor MCP server health, uptime, response times, and Azure DevOps pipelines",
   "transport": "stdio",

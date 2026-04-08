@@ -1,6 +1,6 @@
 {
   "name": "mcp-health-monitor",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "MCP server for monitoring other MCP servers — track health, uptime, tool errors, response times, and Azure DevOps pipeline status",
   "type": "module",
   "main": "./dist/mcp.js",
@@ -88,7 +88,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.27.1",
-    "better-sqlite3": "9.4.3",
+    "better-sqlite3": "12.8.0",
     "zod": "3.25.76"
   },
   "devDependencies": {

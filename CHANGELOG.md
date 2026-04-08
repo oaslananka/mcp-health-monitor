@@ -6,6 +6,13 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-04-08
+
+### Fixed
+
+- Upgraded `better-sqlite3` to `12.8.0` to avoid native install failures on Node 24 environments
+- Eliminated `npx` startup failures caused by `better-sqlite3@9.4.3` fallback rebuild errors
+
 ## [1.0.2] - 2026-04-08
 
 ### Changed

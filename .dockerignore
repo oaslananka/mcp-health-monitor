@@ -1,0 +1,7 @@
+.git
+.github
+.azure
+node_modules
+dist
+npm-debug.log
+coverage

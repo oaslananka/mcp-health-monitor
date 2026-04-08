@@ -1,0 +1,37 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.oaslananka/mcp-health-monitor",
+  "title": "MCP Health Monitor",
+  "description": "Monitor MCP server health, uptime, response times, and Azure DevOps pipeline status",
+  "repository": {
+    "url": "https://github.com/oaslananka/mcp-health-monitor",
+    "source": "github"
+  },
+  "version": "1.0.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "mcp-health-monitor",
+      "version": "1.0.1",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "HEALTH_MONITOR_DB",
+          "description": "Custom path for the SQLite database",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false
+        },
+        {
+          "name": "HEALTH_MONITOR_AUTO_CHECK",
+          "description": "Set to '1' to enable background scheduled checks",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}

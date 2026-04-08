@@ -1,0 +1,197 @@
+import http from 'node:http';
+
+import { jest } from '@jest/globals';
+
+import { createHttpServer, InMemoryRateLimiter } from '../../src/server-http.js';
+
+type HttpResult = {
+  statusCode: number;
+  body: string;
+  headers: http.IncomingHttpHeaders;
+};
+
+async function startServer(server: http.Server): Promise<number> {
+  await new Promise<void>((resolve) => {
+    server.listen(0, '127.0.0.1', () => resolve());
+  });
+
+  const address = server.address();
+  if (!address || typeof address === 'string') {
+    throw new Error('Failed to resolve test server port');
+  }
+
+  return address.port;
+}
+
+async function request(
+  port: number,
+  path: string,
+  method: string,
+  body?: string
+): Promise<HttpResult> {
+  return new Promise((resolve, reject) => {
+    const req = http.request(
+      {
+        hostname: '127.0.0.1',
+        port,
+        path,
+        method,
+        headers: body
+          ? {
+              'Content-Type': 'application/json',
+              'Content-Length': Buffer.byteLength(body)
+            }
+          : undefined
+      },
+      (res) => {
+        const chunks: Buffer[] = [];
+        res.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+        res.on('end', () => {
+          resolve({
+            statusCode: res.statusCode ?? 0,
+            body: Buffer.concat(chunks).toString('utf8'),
+            headers: res.headers
+          });
+        });
+      }
+    );
+
+    req.on('error', reject);
+
+    if (body) {
+      req.write(body);
+    }
+
+    req.end();
+  });
+}
+
+describe('server-http', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('serves a health response', async () => {
+    const server = createHttpServer();
+    const port = await startServer(server);
+
+    try {
+      const result = await request(port, '/health', 'GET');
+
+      expect(result.statusCode).toBe(200);
+      expect(result.body).toContain('"status":"ok"');
+      expect(result.body).toContain('"version"');
+    } finally {
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+    }
+  });
+
+  it('rejects unsupported MCP methods', async () => {
+    const server = createHttpServer();
+    const port = await startServer(server);
+
+    try {
+      const result = await request(port, '/mcp', 'GET');
+
+      expect(result.statusCode).toBe(405);
+      expect(result.headers.allow).toBe('POST');
+    } finally {
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+    }
+  });
+
+  it('returns not found for unsupported paths', async () => {
+    const server = createHttpServer();
+    const port = await startServer(server);
+
+    try {
+      const result = await request(port, '/missing', 'GET');
+
+      expect(result.statusCode).toBe(404);
+      expect(result.body).toContain('Not Found');
+    } finally {
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+    }
+  });
+
+  it('returns parse errors for invalid JSON payloads', async () => {
+    const server = createHttpServer();
+    const port = await startServer(server);
+
+    try {
+      const result = await request(port, '/mcp', 'POST', '{invalid json');
+
+      expect(result.statusCode).toBe(400);
+      expect(result.body).toContain('Parse error');
+    } finally {
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+    }
+  });
+
+  it('enforces per-IP rate limiting for MCP requests', async () => {
+    const server = createHttpServer({
+      rateLimiter: new InMemoryRateLimiter(1, 60_000, () => 1_000)
+    });
+    const port = await startServer(server);
+
+    try {
+      const first = await request(port, '/mcp', 'POST', '{invalid json');
+      const second = await request(port, '/mcp', 'POST', '{invalid json');
+
+      expect(first.statusCode).toBe(400);
+      expect(second.statusCode).toBe(429);
+      expect(second.headers['retry-after']).toBeDefined();
+    } finally {
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+    }
+  });
+
+  it('rejects oversized MCP payloads', async () => {
+    const server = createHttpServer();
+    const port = await startServer(server);
+    const body = JSON.stringify({
+      payload: 'x'.repeat(1024 * 1024)
+    });
+
+    try {
+      const result = await request(port, '/mcp', 'POST', body);
+
+      expect(result.statusCode).toBe(413);
+      expect(result.body).toContain('Payload too large');
+    } finally {
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+    }
+  });
+
+  it('returns internal errors when server connection setup fails', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    const server = createHttpServer({
+      monitorFactory: () => ({
+        connect: async () => {
+          throw new Error('boom');
+        },
+        close: async () => undefined
+      })
+    });
+    const port = await startServer(server);
+
+    try {
+      const result = await request(
+        port,
+        '/mcp',
+        'POST',
+        JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'tools/list'
+        })
+      );
+
+      expect(result.statusCode).toBe(500);
+      expect(result.body).toContain('Internal error');
+    } finally {
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+    }
+  });
+});

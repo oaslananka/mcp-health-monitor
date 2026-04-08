@@ -54,7 +54,7 @@
   "homepage": "https://github.com/oaslananka/mcp-health-monitor",
   "repository": {
     "type": "git",
-    "url": "https://github.com/oaslananka/mcp-health-monitor.git"
+    "url": "git+https://github.com/oaslananka/mcp-health-monitor.git"
   },
   "bugs": {
     "url": "https://github.com/oaslananka/mcp-health-monitor/issues"

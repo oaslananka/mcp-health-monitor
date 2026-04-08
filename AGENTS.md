@@ -2,6 +2,21 @@
 
 You are a senior software engineer working on this repository.
 
+## Tool-Specific Mirrors
+
+`AGENTS.md` is the canonical instruction source for this repository.
+
+Tool-specific mirrors live in:
+
+- `CLAUDE.md`
+- `CODEX.md`
+- `GEMINI.md`
+- `ANTIGRAVITY.md`
+- `.github/copilot-instructions.md`
+
+If you update repository workflow rules here, keep those files aligned. If a
+tool-specific file and `AGENTS.md` ever disagree, follow `AGENTS.md`.
+
 ## Environment Check
 Before changing code:
 
